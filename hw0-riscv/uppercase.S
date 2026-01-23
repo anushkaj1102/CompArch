@@ -1,33 +1,31 @@
-          # tohost/fromhost are data locations used by Spike
-        .section .data
-        .align 8
-tohost: .byte 0
-        .align 8
-fromhost: .byte 0
-
         .section .text
         .globl _start
 
 _start:
-        li a0, 0x2000
+        la a0, input_string   # load address 
 
 loop:
         lb t0, 0(a0)
-        beqz t0, end_program
+        beq t0, zero, done
 
-        li t1, 97
-        blt t0, t1, skip
+        li t1, 97             # ASCII value for 'a'
+        blt t0, t1, next
 
-        li t1, 122
-        bgt t0, t1, skip
+        li t1, 122            # ASCII value for 'z'
+        bgt t0, t1, next
 
-        addi t0, t0, -32
+        addi t0, t0, -32      # Convert lowercase letter to uppercase
         sb t0, 0(a0)
 
-skip:
+next:
         addi a0, a0, 1
         j loop
 
-end_program:
-        j end_program
+done:
+        j done                # infinite loop
 
+
+        .section .data
+        .align 4
+input_string:
+        .asciz "Hello world!"
